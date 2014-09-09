@@ -31,10 +31,10 @@
 #include <ipst.h>                                // เรียกใช้งานไลบรารีสำหรับ IPST-SE
 #include <PS2X_lib.h>                            // เรียกใช้งานไลบรารีสำหรับ PS2 Controller
 
-#define PS2_DAT        18                        // กำหนดขา Data    เป็นขา 18
-#define PS2_CMD        20                        // กำหนดขา Command เป็นขา 20
-#define PS2_SEL        19                        // กำหนดขา Select  เป็นขา 19
-#define PS2_CLK        17                        // กำหนดขา Clock   เป็นขา 17
+#define PS2_DAT        16                        // กำหนดขา Data    เป็นขา 16
+#define PS2_CMD        17                        // กำหนดขา Command เป็นขา 17
+#define PS2_SEL        18                        // กำหนดขา Select  เป็นขา 18
+#define PS2_CLK        19                        // กำหนดขา Clock   เป็นขา 19
 
 PS2X ps2x;                                       // ประกาศตัวแปรสำหรับ PS2 Controller
 
@@ -45,21 +45,21 @@ void setup()
   glcdMode(1);                                   // กำหนดให้หน้าจอแสดงผลเป็นแนวนอน
   setTextSize(2);                                // กำหนดขนาดตัวหนังสือ
     
-  // กำหนดขาที่จะเชื่อมต่กับ PS2 Controller โดยมีการเก็บค่าที่ส่งกลับมาเป็น Integer เพื่อรู้ได้ว่าเชื่อมต่อได้หรือไม่
-  int error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, false, false);
-  
-  if(error == 0)                                 // กรณีที่เชื่อมต่อได้ ไม่มีปัญหาอะไร (Error = 0)
+  glcd(0, 0, "Connecting");                      // แสดงข้อความเพื่อให้รู้ว่ากำลังทำการเชื่อมต่อกับ PS2 Controller
+      
+  while(true)                                    // วนการทำงานเพื่อรอการเชื่อมต่อกับ PS2 Controller
   {
-    glcd(1, 1, "Controller");                    // แสดงข้อความว่าเชื่อมต่อกับ PS2 Controller เรียบร้อยแล้ว
-    glcd(2, 1, "Available");
-    delay(1000);                                 // หน่วงเวลา 1 วินาที
-    glcdClear();                                 // เคลียร์ภาพทั้งหมดบนหน้าจอแสดงผล
-  } 
-  else                                           // ถ้าไม่สามารถเชื่อมต่อกับ PS2 Controller 
-  {                                
-    glcd(1, 1, "Controller");                    // แสดงข้อความว่าไม่สามารถเชื่อมต่อกับ PS2 Controller
-    glcd(2, 1, "Unavailable");
-    while(true);                                 // วนไม่จำกัด เพื่อให้ผู้ใช้รีเซตบอร์ดเพื่อเชื่อมต่อใหม่
+    // กำหนดขาที่จะเชื่อมต่กับ PS2 Controller โดยมีการเก็บค่าที่ส่งกลับมาเป็น Integer เพื่อรู้ได้ว่าเชื่อมต่อได้หรือไม่
+    int error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, false, false);
+  
+    if(error == 0)                               // กรณีที่เชื่อมต่อได้ ไม่มีปัญหาอะไร (Error = 0)
+    {
+      glcd(0, 0, "OK           ");               // แสดงข้อความว่าเชื่อมต่อกับ PS2 Controller เรียบร้อยแล้ว
+      delay(1000);                               // หน่วงเวลา 1 วินาที
+      glcdClear();                               // เคลียร์ภาพทั้งหมดบนหน้าจอแสดงผล
+      break;                                     // ออกจาก while(true)
+    } 
+    delay(500);                                  // หน่วงเวลา 500 มิลลิวินาทีเพื่อรอการเชื่อมต่อครั้งต่อไปในกรณีที่เชื่อมต่อไม่สำเร็จ
   }
 }
 
